@@ -1,0 +1,41 @@
+package {{.Module.ShortName}}
+
+import (
+	"{{ .System.Name }}/{{ .Module.Name|pathCase }}/api"
+)
+
+{{- $self := .Interface.Name | firstCharLower }}
+{{- $class := .Interface.Name | lowerCamelCase }}
+
+type {{$class}} struct {
+{{- range .Interface.Properties }}
+    {{.Name}} {{goReturn . "api."}}
+{{- end }}
+}
+
+func New{{.Interface.Name}}() api.{{.Interface.Name}} {
+  	obj := &{{$class}}{
+{{- range .Interface.Properties }}
+        {{.Name}}: {{goDefault . "api."}},
+{{- end }}
+    }
+  	return obj
+}
+
+{{- range .Interface.Properties }}
+// property get {{.Name}}
+func ({{$self}} *{{$class}}) Get{{.Name|camelCase}}() {{goReturn . "api."}} {
+	return {{goDefault . "api."}}
+}
+
+// property set {{.Name}}
+func ({{$self}} *{{$class}}) Set{{.Name|camelCase}}({{goParam . "api."}}) {  
+}
+{{ end }}
+{{- range .Interface.Methods }}
+// method {{.Name}}
+func ({{$self}} *{{$class}}) {{.Name|camelCase}}({{goParams .Inputs "api."}}) {{goReturn .Output "api."}} {
+  return {{goDefault .Output "api."}}
+}
+    
+{{ end }}

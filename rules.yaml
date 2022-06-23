@@ -1,0 +1,43 @@
+features:
+  - name: api
+    scopes:
+      - match: module
+        documents:
+          - source: "api/api.go.tmpl"
+            target: "{{.Module.Name|pathCase}}/api/api.go"
+  - name: scaffold
+    scopes:
+      - match: system
+        documents:
+          - source: "go.mod.tmpl"
+            target: "go.mod"
+      - match: interface
+        documents:
+          - source: "scaffold/interface.go.tmpl"
+            target: "{{.Module.Name|pathCase}}/pkg/{{.Interface.Name|lowerCase}}.go"
+          - source: "scaffold/interface_test.go.tmpl"
+            target: "{{.Module.Name|pathCase}}/pkg/{{.Interface.Name|lowerCase}}_test.go"
+  - name: http
+    scopes:
+      - match: module
+        documents:
+          - source: "http/client.go.tmpl"
+            target: "{{.Module.Name|pathCase}}/http/client.go"
+          - source: "http/calls.go.tmpl"
+            target: "{{.Module.Name|pathCase}}/http/calls.go"
+  # scaffold:
+  #   system:
+  #     documents:
+  #       - source: "go.mod"
+  #         target: "go.mod"
+  #   interface:
+  #     documents:
+  #       - source: "scaffold/interface.go.liquid"
+  #         target: "{{module.name|path}}/lib/{{interface.name|lower}}.go"
+  #       - source: "scaffold/test.go.liquid"
+  #         target: "{{module.name|path}}/lib/{{interface.name|lower}}_test.go"
+  # http:
+  #   interface:
+  #     documents:
+  #       - source: "http/httpclient.go.liquid"
+  #         target: "{{module.name|path}}/http/http{{interface.name|lower}}.go"

@@ -1,0 +1,38 @@
+package api
+{{ range .Module.Enums -}}
+{{- $class := .Name }}
+// enum {{ $class }}
+type {{$class}} int
+
+const (
+{{- range .Members }}
+    {{$class}}{{.Name}} = {{.Value}}
+{{- end }}
+)
+{{ end }}
+
+// Data Structures
+{{- range .Module.Structs }}
+{{- $class := .Name }}
+type {{$class}} struct {
+{{- range .Fields }}
+    {{.Name|camelCase}} {{goReturn . ""}} `json:"{{.Name|lowerCamelCase}}"`
+{{- end }}
+}
+{{- end }}
+
+// Object Interfaces
+{{- range .Module.Interfaces }}
+{{- $class := .Name }}
+type {{$class}} interface {
+    // Properties
+{{- range .Properties }}
+    Get{{.Name|camelCase}}() {{. | goReturn}}
+    Set{{.Name|camelCase}}({{goParam . ""}})
+{{- end }}
+    // Methods
+{{- range .Methods }}
+    {{.Name|camelCase}}({{.Inputs|goParams}}) {{.Output|goReturn}}
+{{- end }}
+}
+{{- end }}
