@@ -1,12 +1,12 @@
 package api
-{{ range .Module.Enums -}}
+{{ range .Module.Enums}}
 {{- $class := .Name }}
 // enum {{ $class }}
 type {{$class}} int
 
 const (
 {{- range .Members }}
-    {{$class}}{{.Name}} = {{.Value}}
+    {{$class}}{{Camel .Name}} {{$class}} = {{.Value}}
 {{- end }}
 )
 {{ end }}
@@ -16,7 +16,7 @@ const (
 {{- $class := .Name }}
 type {{$class}} struct {
 {{- range .Fields }}
-    {{.Name|camelCase}} {{goReturn . ""}} `json:"{{.Name|lowerCamelCase}}"`
+    {{Camel .Name}} {{goReturn "" .}} `json:"{{camel .Name}}"`
 {{- end }}
 }
 {{- end }}
@@ -27,12 +27,12 @@ type {{$class}} struct {
 type {{$class}} interface {
     // Properties
 {{- range .Properties }}
-    Get{{.Name|camelCase}}() {{. | goReturn}}
-    Set{{.Name|camelCase}}({{goParam . ""}})
+    Get{{Camel .Name}}() {{goReturn "" .}}
+    Set{{Camel .Name}}({{goParam "" .}})
 {{- end }}
     // Methods
 {{- range .Methods }}
-    {{.Name|camelCase}}({{.Inputs|goParams}}) {{.Output|goReturn}}
+    {{camel .Name}}({{goParams "" .Inputs}}) {{goReturn "" .Output}}
 {{- end }}
 }
 {{- end }}

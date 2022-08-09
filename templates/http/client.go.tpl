@@ -37,3 +37,23 @@ func (c *Client) Post(url string, data interface{}) (interface{}, error) {
     }
     return result, nil
 }
+
+{{- range .Module.Interfaces }}
+{{- $iface := .Name }}
+
+{{- range .Methods }}
+
+{{- $name := (print $iface (Camel .Name))}}
+
+func (c *Client) {{ $name}}(req *{{ $name }}Request, reply *{{ $name }}Reply) error {
+    url := "{{ $.Module.Name }}/{{ $iface }}/{{ .Name }}"
+    resp, err := c.Post(url, req)
+    if err != nil {
+        return err
+    }
+    *reply = *resp.(*{{ $name }}Reply)
+    return nil
+}
+
+{{ end }}
+{{ end }}

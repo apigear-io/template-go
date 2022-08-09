@@ -2,29 +2,32 @@ features:
   - name: api
     scopes:
       - match: module
+        prefix: "{{snake .Module.Name}}/"
         documents:
-          - source: "api/api.go.tmpl"
-            target: "{{.Module.Name|pathCase}}/api/api.go"
+          - source: "api/api.go.tpl"
+            target: "/api/api.go"
   - name: scaffold
     scopes:
       - match: system
         documents:
-          - source: "go.mod.tmpl"
+          - source: "go.mod.tpl"
             target: "go.mod"
       - match: interface
+        prefix: "{{snake .Module.Name}}/"
         documents:
-          - source: "scaffold/interface.go.tmpl"
-            target: "{{.Module.Name|pathCase}}/pkg/{{.Interface.Name|lowerCase}}.go"
-          - source: "scaffold/interface_test.go.tmpl"
-            target: "{{.Module.Name|pathCase}}/pkg/{{.Interface.Name|lowerCase}}_test.go"
+          - source: "scaffold/interface.go.tpl"
+            target: "{{snake .Interface.Name}}.go"
+          - source: "scaffold/interface_test.go.tpl"
+            target: "{{snake .Interface.Name}}_test.go"
   - name: http
     scopes:
       - match: module
+        prefix: "{{snake .Module.Name}}/"
         documents:
-          - source: "http/client.go.tmpl"
-            target: "{{.Module.Name|pathCase}}/http/client.go"
-          - source: "http/calls.go.tmpl"
-            target: "{{.Module.Name|pathCase}}/http/calls.go"
+          - source: "http/client.go.tpl"
+            target: "http/client.go"
+          - source: "http/dao.go.tpl"
+            target: "http/dao.go"
   # scaffold:
   #   system:
   #     documents:
