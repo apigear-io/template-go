@@ -1,0 +1,3 @@
+package same
+
+import "testing"

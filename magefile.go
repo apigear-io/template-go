@@ -1,65 +1,66 @@
 //go:build mage
-// +build mage
 
 package main
 
 import (
-	"os"
+	"log"
 
 	"github.com/magefile/mage/sh"
 )
 
 const (
-	golden_dir = "goldenmaster"
-	test_dir   = "test"
+	goldenDir = "goldenmaster"
+	tmpDir    = "tmp"
+	apisDir   = "testbed-apis"
 )
 
-func runDiff(dir1, dir2 string) error {
-	_ = sh.RunV("git", "--no-pager", "diff", "--no-index", dir1, dir2)
-	return nil
+func must(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
-func rmDir(dir string) error {
-	return os.RemoveAll(dir)
+func gitClone(url, dir string) {
+	must(sh.RunV("git", "clone", "--depth=1", url, dir))
 }
 
-func runGenerator(output string) error {
-	return sh.Run("cli", "g", "x", "-t", ".", "-i", "testbed.api", "-o", output, "-f", "all", "--force")
+func runDiff(dir1, dir2 string) {
+	must(sh.RunV("git", "--no-pager", "diff", "--no-index", dir1, dir2))
+}
+
+func goInstall(pkg string) {
+	must(sh.RunV("go", "install", pkg))
+}
+func genX(out string) {
+	must(sh.RunV("cli", "g", "x", "-t", ".", "-i", "testbed-apis/apigear", "-o", out, "-f", "all", "--force"))
+}
+
+func rmDir(dir string) {
+	must(sh.Rm(dir))
 }
 
 // Install installs the apigear cli.
-func Install() error {
-	return sh.Run("go", "install", "github.com/apigear-io/cli@latest")
+func Install() {
+	rmDir("testbed-apis")
+	goInstall("github.com/apigear-io/cli@latest")
+	gitClone("https://github.com/apigear-io/go-testbed-apis.git", "testbed-apis")
 }
 
-// Gen generates the golden master.
-func Gen() error {
-	output := golden_dir
-	if err := rmDir(output); err != nil {
-		return err
-	}
-	if err := runGenerator(output); err != nil {
-		return err
-	}
-	return nil
+// Master generates the golden master.
+func Master() {
+	rmDir(goldenDir)
+	genX(goldenDir)
 }
 
-// Test runs the generator and compares the output with the golden master.
-func Test() error {
-	// mg.Deps(Clean)
-	// mg.Deps(Install)
-	// mg.Deps(Gen)
-	output := test_dir
-	if err := runGenerator(output); err != nil {
-		return err
-	}
-	if err := runDiff(golden_dir, output); err != nil {
-		return err
-	}
-	return nil
+// Diff runs the generator and compares the output with the golden master.
+func Diff() {
+	rmDir(tmpDir)
+	genX(tmpDir)
+	runDiff(goldenDir, tmpDir)
 }
 
 // Clean removes all generated files.
-func Clean() error {
-	return rmDir("test")
+func Clean() {
+	rmDir(tmpDir)
+	rmDir(apisDir)
 }

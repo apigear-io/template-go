@@ -1,4 +1,4 @@
-{{-/*gotype: github.com/apigear-io/cli/pkg/model.ModuleScope*/-}}
+{{- /*gotype: github.com/apigear-io/cli/pkg/model.ModuleScope*/ -}}
 package api
 {{ range .Module.Enums}}
 {{- $class := .Name }}
