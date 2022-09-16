@@ -2,9 +2,9 @@ package {{.Module.ShortName|lower}}
 
 import "testing"
 
-{{- range .Interface.Methods }}
+{{- range .Interface.Operations }}
 
 func Test{{$.Interface.Name}}{{Camel .Name}}(t *testing.T) {
-	t.Errorf("TODO")
+	t.Skip("TODO")
 }
 {{- end }}

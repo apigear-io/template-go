@@ -6,18 +6,24 @@ features:
         documents:
           - source: "api/api.go.tpl"
             target: "/api/api.go"
+          - source: "api/as.go.tpl"
+            target: "/api/as.go"
+          - source: "api/dao.go.tpl"
+            target: "/api/dao.go"
   - name: scaffold
     scopes:
       - match: system
         documents:
           - source: "go.mod.tpl"
             target: "go.mod"
+          - source: Makefile.tpl
+            target: Makefile
       - match: interface
         prefix: "{{snake .Module.Name}}/"
         documents:
-          - source: "scaffold/interface.go.tpl"
+          - source: "scaffold/impl.go.tpl"
             target: "{{snake .Interface.Name}}.go"
-          - source: "scaffold/interface_test.go.tpl"
+          - source: "scaffold/impl_test.go.tpl"
             target: "{{snake .Interface.Name}}_test.go"
   - name: http
     scopes:
@@ -28,19 +34,41 @@ features:
             target: "http/client.go"
           - source: "http/dao.go.tpl"
             target: "http/dao.go"
-  # scaffold:
-  #   system:
-  #     documents:
-  #       - source: "go.mod"
-  #         target: "go.mod"
-  #   interface:
-  #     documents:
-  #       - source: "scaffold/interface.go.liquid"
-  #         target: "{{module.name|path}}/lib/{{interface.name|lower}}.go"
-  #       - source: "scaffold/test.go.liquid"
-  #         target: "{{module.name|path}}/lib/{{interface.name|lower}}_test.go"
-  # http:
-  #   interface:
-  #     documents:
-  #       - source: "http/httpclient.go.liquid"
-  #         target: "{{module.name|path}}/http/http{{interface.name|lower}}.go"
+  - name: olink
+    scopes:
+      - match: system
+        documents:
+          - source: "olink/server.go.tpl"
+            target: "cmd/olink_server/main.go"
+          - source: "olink/client.go.tpl"
+            target: "cmd/olink_client/main.go"
+      - match: module
+        prefix: "{{snake .Module.Name}}/"
+        documents:
+          - source: "olink/dao.go.tpl"
+            target: "olink/dao.go"
+      - match: interface
+        prefix: "{{snake .Module.Name}}/"
+        documents:
+          - source: "olink/sink.go.tpl"
+            target: "olink/{{snake .Interface.Name}}_sink.go"
+          - source: "olink/source.go.tpl"
+            target: "olink/{{snake .Interface.Name}}_source.go"
+  - name: olink_testbed
+    scopes:
+      - match: system
+        documents:
+          - source: "olink_testbed/server.go.tpl"
+            target: "cmd/olink_testbed_server/main.go"
+          - source: "olink_testbed/client.go.tpl"
+            target: "cmd/olink_testbed_client/main.go"
+      - match: module
+        prefix: "{{snake .Module.Name}}/olink/testbed/"
+        documents:
+          - source: "olink_testbed/runner.go.tpl"
+            target: "runner_test.go"
+      - match: interface
+        prefix: "{{snake .Module.Name}}/olink/testbed/"
+        documents:
+          - source: "olink_testbed/impl.go.tpl"
+            target: "{{snake .Interface.Name}}_impl.go"

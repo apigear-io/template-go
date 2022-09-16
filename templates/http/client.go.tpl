@@ -41,7 +41,7 @@ func (c *Client) Post(url string, data interface{}) (interface{}, error) {
 {{- range .Module.Interfaces }}
 {{- $iface := .Name }}
 
-{{- range .Methods }}
+{{- range .Operations }}
 
 {{- $name := (print $iface (Camel .Name))}}
 

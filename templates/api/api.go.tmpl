@@ -1,10 +1,11 @@
+{{-/*gotype: github.com/apigear-io/cli/pkg/model.ModuleScope*/-}}
 package api
 {{ range .Module.Enums}}
 {{- $class := .Name }}
 // enum {{ $class }}
 type {{$class}} int
-
 const (
+    {{$class}}_UNKNOWN {{$class}} = -1
 {{- range .Members }}
     {{$class}}{{Camel .Name}} {{$class}} = {{.Value}}
 {{- end }}
@@ -22,17 +23,26 @@ type {{$class}} struct {
 {{- end }}
 
 // Object Interfaces
+
+
+type INotifier interface {
+	NotifyPropertyChanged(name string, value any)
+	NotifySignal(name string, args []any)
+}
+
 {{- range .Module.Interfaces }}
 {{- $class := .Name }}
 type {{$class}} interface {
+    INotifier
     // Properties
 {{- range .Properties }}
     Get{{Camel .Name}}() {{goReturn "" .}}
     Set{{Camel .Name}}({{goParam "" .}})
 {{- end }}
     // Methods
-{{- range .Methods }}
-    {{camel .Name}}({{goParams "" .Inputs}}) {{goReturn "" .Output}}
+{{- range .Operations }}
+    {{Camel .Name}}({{goParams "" .Params}}) {{goReturn "" .Return}}
 {{- end }}
 }
 {{- end }}
+

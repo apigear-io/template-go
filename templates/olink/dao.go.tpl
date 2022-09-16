@@ -1,4 +1,4 @@
-package http
+package olink
 
 
 import (
@@ -8,6 +8,12 @@ import (
 
 {{- range .Module.Interfaces }}
 {{- $iface := .Name }}
+
+type {{ $iface }}Properties struct {
+    {{- range .Properties }}
+    {{ Camel .Name }} *{{ goReturn "api." . }} `json:"{{ .Name }},omitempty"`
+    {{- end }}
+}
 
 {{- range .Operations }}
 

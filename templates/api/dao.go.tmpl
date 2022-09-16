@@ -1,9 +1,5 @@
-package http
-
-
-import (
-    "{{ .System.Name }}/{{snake .Module.Name}}/api"
-)
+{{-/*gotype: github.com/apigear-io/cli/pkg/model.ModuleScope*/-}}
+package api
 
 
 {{- range .Module.Interfaces }}
@@ -13,17 +9,17 @@ import (
 
 {{- $name := (print $iface (Camel .Name))}}
 
-// func {{ $iface }}.{{.Name}}({{goParams "api." .Params}}) {{goReturn "api." .Return}}
+// func {{ $iface }}.{{.Name}}({{goParams "" .Params}}) {{goReturn "" .Return}}
 
 type {{ $name }}Request struct {
 {{- range .Params }}
-    {{Camel .Name}} {{goReturn "api." .}} `json:"{{camel .Name}}"`
+    {{Camel .Name}} {{goReturn "" .}} `json:"{{camel .Name}}"`
 {{- end }}
 }
 
 type {{ $name }}Reply struct {
 {{- if .Return.HasType }}
-    Result {{goReturn "api." .Return}} `json:"result"`
+    Result {{goReturn "" .Return}} `json:"result"`
 {{- end }}
 }
 
