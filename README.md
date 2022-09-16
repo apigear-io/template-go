@@ -23,8 +23,8 @@ will print the targets available.
 ```bash
 Targets:
   clean      removes all generated files.
-  gen        generates the golden master.
+  diff       runs the generator and compares the output with the golden master.
   install    installs the apigear cli.
-  test       runs the generator and compares the output with the golden master.
+  master     generates the golden master.
 ```
 

@@ -39,7 +39,7 @@ func rmDir(dir string) {
 	must(sh.Rm(dir))
 }
 
-// Install installs the apigear cli.
+// Install installs the apigear cli and testbed-apis.
 func Install() {
 	rmDir("testbed-apis")
 	goInstall("github.com/apigear-io/cli@latest")
