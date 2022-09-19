@@ -32,7 +32,7 @@ func goInstall(pkg string) {
 	must(sh.RunV("go", "install", pkg))
 }
 func genX(out string) {
-	must(sh.RunV("cli", "g", "x", "-t", ".", "-i", "testbed-apis/apigear", "-o", out, "-f", "all", "--force"))
+	must(sh.RunV("apigear", "g", "x", "-t", ".", "-i", "testbed-apis/apigear", "-o", out, "-f", "all", "--force"))
 }
 
 func rmDir(dir string) {
@@ -42,7 +42,7 @@ func rmDir(dir string) {
 // Install installs the apigear cli and testbed-apis.
 func Install() {
 	rmDir("testbed-apis")
-	goInstall("github.com/apigear-io/cli@latest")
+	goInstall("github.com/apigear-io/cli/cmd/apigear@latest")
 	gitClone("https://github.com/apigear-io/go-testbed-apis.git", "testbed-apis")
 }
 
