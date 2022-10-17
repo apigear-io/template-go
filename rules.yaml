@@ -5,11 +5,11 @@ features:
         prefix: "{{snake .Module.Name}}/"
         documents:
           - source: "api/api.go.tpl"
-            target: "/api/api.go"
+            target: "api/api.go"
           - source: "api/as.go.tpl"
-            target: "/api/as.go"
+            target: "api/as.go"
           - source: "api/dao.go.tpl"
-            target: "/api/dao.go"
+            target: "api/dao.go"
   - name: scaffold
     scopes:
       - match: system
@@ -57,6 +57,7 @@ features:
   - name: olink_testbed
     scopes:
       - match: system
+        prefix: "{{snake .Module.Name}}/olink/testbed/"
         documents:
           - source: "olink_testbed/server.go.tpl"
             target: "cmd/olink_testbed_server/main.go"
