@@ -45,7 +45,7 @@ func (s *{{$class}}) Invoke(methodId string, args core.Args) (core.Any, error) {
             return nil, err
         }
         {{- end }}
-        {{- if .Return.NoType }}
+        {{- if .Return.IsVoid }}
         s.impl.{{ Camel .Name}}({{join ", " .ParamNames}})
         return nil, nil
         {{- else }}

@@ -52,7 +52,7 @@ func ({{$self}} *{{$class}}) {{Camel .Name}}({{goParams "api." .Params}}) {{goRe
     {{- $sig := replace .Name "param" "sig"}}
     {{$self}}.NotifySignal("{{$sig}}", []any{ {{camel .Name}} })
     {{- end}}
-    {{- if .Return.HasType }}
+    {{- if not .Return.IsVoid }}
     {{- $p := index .Params 0 }}
     return {{$p.Name}}
     {{- end }}

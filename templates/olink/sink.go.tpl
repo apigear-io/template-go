@@ -43,12 +43,12 @@ func (s *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
 {{ end }}
 {{- range .Interface.Operations }}
 func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn "api." .Return }} {
-    {{- if .Return.HasType }}
+    {{- if .Return.IsVoid }}
     var reply {{goReturn "api." .Return}}    
     {{- end }}    
     if s.node != nil {
         methodId := core.MakeIdentifier(s.ObjectId(), "{{.Name}}")
-        {{- if .Return.HasType }}
+        {{- if .Return.IsVoid }}
         wg := sync.WaitGroup{}
         wg.Add(1)
         args := core.Args{ {{join ", " .ParamNames}} }
@@ -61,7 +61,7 @@ func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn 
         s.node.InvokeRemote(methodId, core.Args{}, nil)
         {{- end }}
     }
-    {{- if .Return.HasType }}
+    {{- if .Return.IsVoid }}
     return reply
     {{- end }}
 }

@@ -12,6 +12,8 @@ A Go blueprint.
 
 You need to have go installed and configured.
 
+* https://go.dev/
+
 ### Build
 
 ```bash

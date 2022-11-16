@@ -28,7 +28,7 @@ type {{ $name }}Request struct {
 }
 
 type {{ $name }}Reply struct {
-{{- if .Return.HasType }}
+{{- if .Return.IsVoid }}
     Result {{goReturn "api." .Return}} `json:"result"`
 {{- end }}
 }

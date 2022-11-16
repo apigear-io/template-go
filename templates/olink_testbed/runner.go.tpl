@@ -47,8 +47,10 @@ func Test{{Camel .Name}}(t *testing.T) {
         {{ camel .Name }} := {{ goDefault "api." .}}
         {{- end }}
         result{{Camel .Name}} := sink.{{Camel .Name}}({{ join ", " .ParamNames }})
+        {{- if .Params }}
         {{- $p := index .Params 0 }}
         assert.Equal(t, {{camel $p.Name}}, result{{Camel .Name}})
+        {{- end }}
         {{- range .Params}}
         {{- $prop := replace .Name "param" "prop"}}
         assert.Equal(t, {{.Name}}, sink.{{Camel $prop}})
