@@ -1,4 +1,4 @@
-package http
+package {{.Module.Name}}
 
 
 import (
@@ -8,17 +8,22 @@ import (
     "net/http"
 )
 
-type Client struct {
+{{- range .Module.Interfaces }}
+{{- $class := printf "%sClient" (Camel .Name) }}
+
+type {{ $class}} struct {
+    baseUrl string
     client *http.Client
 }
 
-func NewClient(c *http.Client) *Client {
-    return &Client{
+func New{{$class}}(baseUrl string, c *http.Client) *{{$class}} {
+    return &{{$class}}{
+        baseUrl: baseUrl,
         client: c,
     }
 }
 
-func (c *Client) Post(url string, data interface{}) (interface{}, error) {
+func (c *{{$class}}) post(url string, data interface{}) (interface{}, error) {
     b, err := json.Marshal(data)
     if err != nil {
         return nil, err
@@ -37,23 +42,19 @@ func (c *Client) Post(url string, data interface{}) (interface{}, error) {
     }
     return result, nil
 }
-
-{{- range .Module.Interfaces }}
 {{- $iface := .Name }}
 
 {{- range .Operations }}
 
 {{- $name := (print $iface (Camel .Name))}}
 
-func (c *Client) {{ $name}}(req *{{ $name }}Request, reply *{{ $name }}Reply) error {
-    url := "{{ $.Module.Name }}/{{ $iface }}/{{ .Name }}"
-    resp, err := c.Post(url, req)
+func (c *{{$class}}) {{Camel .Name}}(req *{{ $name }}Request) (*{{ $name }}Reply, error) {
+    resp, err := c.post("{{ snake $.Module.Name }}/{{ snake $iface }}/{{ snake .Name }}", req)
     if err != nil {
-        return err
+        return nil, err
     }
-    *reply = *resp.(*{{ $name }}Reply)
-    return nil
+    reply := resp.(*{{ $name }}Reply)
+    return reply, nil
 }
-
-{{ end }}
-{{ end }}
+{{- end }}
+{{- end }}

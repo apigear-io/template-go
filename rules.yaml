@@ -28,12 +28,16 @@ features:
   - name: http
     scopes:
       - match: module
-        prefix: "{{snake .Module.Name}}/"
+        prefix: ""
         documents:
           - source: "http/client.go.tpl"
-            target: "http/client.go"
+            target: "handler/{{dot .Module.Name}}/client.go"
           - source: "http/dao.go.tpl"
-            target: "http/dao.go"
+            target: "handler/{{dot .Module.Name}}/dao.go"
+          - source: "http/handler.go.tpl"
+            target: "handler/{{dot .Module.Name}}/handler.go"
+          - source: "http/service.go.tpl"
+            target: "handler/{{dot .Module.Name}}/service.go"
   - name: olink
     scopes:
       - match: system
@@ -57,7 +61,6 @@ features:
   - name: olink_testbed
     scopes:
       - match: system
-        prefix: "{{snake .Module.Name}}/olink/testbed/"
         documents:
           - source: "olink_testbed/server.go.tpl"
             target: "cmd/olink_testbed_server/main.go"
