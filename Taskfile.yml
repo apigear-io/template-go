@@ -1,5 +1,9 @@
 version: '3'
 
+env:
+  GO111MODULE: on
+  CGO_ENABLED: 0
+
 tasks:
   default:
     desc: List tasks
