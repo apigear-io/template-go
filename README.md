@@ -1,6 +1,6 @@
-# GO Blueprint
+# ApiGear template for Go
 
-A Go blueprint.
+This is a template for the [ApiGear](https://apigear.io) code generator.
 
 ## Features
 
@@ -8,25 +8,31 @@ A Go blueprint.
 * scaffold: create a fully featured project with reference implementations and tests
 * http: A http client to be used with the Apigear HTTP protocol.
 
-## Development
+## Prerequisites
 
-You need to have go installed and configured.
+* [Task](https://taskfile.dev/#/installation)
+* [Go](https://go.dev/)
 
-* https://go.dev/
-
-### Build
-
-```bash
-go run main.go
-```
-
-will print the targets available.
+See the current tasks:
 
 ```bash
-Targets:
-  clean      removes all generated files.
-  diff       runs the generator and compares the output with the golden master.
-  install    installs the apigear cli.
-  master     generates the golden master.
+task --list
 ```
 
+## Test
+
+```bash
+task test
+```
+
+This will generate a test output in the `test` folder.
+
+To diff the test output with the golden master:
+
+```bash
+task diff
+```
+
+## License
+
+[MIT](LICENSE)

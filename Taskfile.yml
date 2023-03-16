@@ -1,0 +1,24 @@
+version: '3'
+
+tasks:
+  default:
+    desc: run test task
+    deps: [ test ]
+  install:
+    desc: Install apigear cli
+    cmds:
+      - go install github.com/apigear-io/cli/cmd/apigear@latest
+  clean:
+    desc: Clean up
+    cmds:
+      - rm -rf ./test
+  test:
+    desc: Run tests
+    deps: [clean]
+    cmds:
+      - apigear generate solution ./apigear/goldenmaster.solution.yaml
+  diff:
+    desc: Diff generated files
+    deps: [test]
+    cmds:
+      - git --no-pager diff --no-index ./test ./goldenmaster
