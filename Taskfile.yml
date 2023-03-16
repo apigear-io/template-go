@@ -6,9 +6,10 @@ tasks:
     cmds:
       - task --list
   install:
-    desc: Install apigear cli
+    desc: Install dependencies
     cmds:
       - go install github.com/apigear-io/cli/cmd/apigear@latest
+      - go install github.com/go-task/task/v3/cmd/task@latest
   clean:
     desc: Clean up
     cmds:
