@@ -1,0 +1,30 @@
+version: '3'
+
+env:
+  GO111MODULE: on
+  CGO_ENABLED: 0
+
+tasks:
+  default:
+    desc: List tasks
+    cmds:
+      - task --list
+  install:
+    desc: Install dependencies
+    cmds:
+      - go install github.com/apigear-io/cli/cmd/apigear@latest
+      - go install github.com/go-task/task/v3/cmd/task@latest
+  clean:
+    desc: Clean up
+    cmds:
+      - rm -rf ./test
+  test:
+    desc: Run tests
+    deps: [clean]
+    cmds:
+      - apigear generate solution ./apigear/goldenmaster.solution.yaml
+  diff:
+    desc: Diff generated files
+    deps: [test]
+    cmds:
+      - git --no-pager diff --no-index ./test ./goldenmaster
