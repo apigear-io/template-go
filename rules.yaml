@@ -57,7 +57,6 @@ features:
   - name: olink_testbed
     scopes:
       - match: system
-        prefix: "{{snake .Module.Name}}/olink/testbed/"
         documents:
           - source: "olink_testbed/server.go.tpl"
             target: "cmd/olink_testbed_server/main.go"
