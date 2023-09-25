@@ -35,6 +35,8 @@ features:
           - source: "http/dao.go.tpl"
             target: "http/dao.go"
   - name: olink
+    requires:
+      - api
     scopes:
       - match: system
         documents:
@@ -55,9 +57,14 @@ features:
           - source: "olink/source.go.tpl"
             target: "olink/{{snake .Interface.Name}}_source.go"
   - name: olink_testbed
+    requires:
+      - olink      
     scopes:
       - match: system
         documents:
+          - source: "olink_testbed/go.mod"
+            target: "go.mod"
+            raw: true
           - source: "olink_testbed/server.go.tpl"
             target: "cmd/olink_testbed_server/main.go"
           - source: "olink_testbed/client.go.tpl"

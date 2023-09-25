@@ -6,23 +6,27 @@ import (
 )
 
 
-func AsInt(v any) (int64, error) {
+func AsInt(v any) (int32, error) {
 	switch v := v.(type) {
-	case int64:
+	case int32:
 		return v, nil
 	case json.Number:
-		return v.Int64()
+		i, err := v.Int64()
+        if err != nil {
+            return 0, err
+        }
+        return int32(i), nil
 	default:
-		return 0, fmt.Errorf("unable to cast %#v of type %T to int64", v, v)
+		return 0, fmt.Errorf("unable to cast %#v of type %T to int32", v, v)
 	}
 }
 
-func AsIntArray(v any) ([]int64, error) {
+func AsIntArray(v any) ([]int32, error) {
 	switch v := v.(type) {
-	case []int64:
+	case []int32:
 		return v, nil
 	case []interface{}:
-		result := make([]int64, len(v))
+		result := make([]int32, len(v))
 		for i, value := range v {
 			result[i], _ = AsInt(value)
 		}
@@ -30,33 +34,37 @@ func AsIntArray(v any) ([]int64, error) {
 	case nil:
 		return nil, nil
 	default:
-		return nil, fmt.Errorf("unable to cast %#v of type %T to []int64", v, v)
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []int32", v, v)
 	}
 }
 
-func AsFloat(v any) (float64, error) {
-	switch v := v.(type) {
-	case float64:
+func AsFloat(v any) (float32, error) {
+	switch v := v.(type) {	
+	case float32:
 		return v, nil
 	case json.Number:
-		return v.Float64()
+		f, err := v.Float64()
+		if err != nil {
+			return 0.0, err
+		}
+		return float32(f), nil
 	default:
-		return 0, fmt.Errorf("unable to cast %#v of type %T to float64", v, v)
+		return 0, fmt.Errorf("unable to cast %#v of type %T to float32", v, v)
 	}
 }
 
-func AsFloatArray(v any) ([]float64, error) {
+func AsFloatArray(v any) ([]float32, error) {
 	switch v := v.(type) {
-	case []float64:
+	case []float32:
 		return v, nil
 	case []interface{}:
-		result := make([]float64, len(v))
+		result := make([]float32, len(v))
 		for i, value := range v {
 			result[i], _ = AsFloat(value)
 		}
 		return result, nil
 	default:
-		return nil, fmt.Errorf("unable to cast %#v of type %T to []float64", v, v)
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []float32", v, v)
 	}
 }
 

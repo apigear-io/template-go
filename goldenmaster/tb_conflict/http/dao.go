@@ -1,7 +1,5 @@
 package http
 
-
 import (
-    "goldenmaster/tb_conflict/api"
+	"goldenmaster/tb_conflict/api"
 )
-

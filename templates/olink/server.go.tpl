@@ -5,21 +5,21 @@ import (
 	"flag"
 	"log"
 	"net/http"
-    "olink/pkg/ws"
-    "olink/pkg/remote"
+    "github.com/apigear-io/objectlink-core-go/olink/ws"
+    "github.com/apigear-io/objectlink-core-go/olink/remote"
 {{- range .System.Modules}}
 {{- $module := . }}
     {{snake .Name}}_olink "{{$system.Name}}/{{snake .Name}}/olink"
-    {{snake .Name}}_impl "{{$system.Name}}/{{snake .Name}}"
+    {{snake .Name}}_impl "{{$system.Name}}/{{snake .Name}}/olink/testbed"
 {{- end }}    
 )
 
 
 var addr = flag.String("addr", ":8080", "http service address")
-
 var registry = remote.NewRegistry()
 var node = remote.NewNode(registry)
-var hub = ws.NewHub(registry)
+var ctx = context.Background()
+var hub = ws.NewHub(ctx, registry)
 
 func init() {
 {{- range .System.Modules }}

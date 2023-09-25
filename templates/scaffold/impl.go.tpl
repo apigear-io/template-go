@@ -18,15 +18,15 @@ var _ api.{{.Interface.Name}} = (*{{$class}})(nil)
 var _ api.INotifier = (*{{$class}})(nil)
 
 func New{{.Interface.Name}}(notifier api.INotifier) api.{{.Interface.Name}} {
-	obj := &{{$class}}{
+    obj := &{{$class}}{
         INotifier: notifier,
-{{- range .Interface.Properties }}
-{{- if .IsArray }}
+        {{- range .Interface.Properties }}
+        {{- if .IsArray }}
         {{.Name}}: make({{goReturn "api." . }}, 0),
-{{- else }}
+        {{- else }}
         {{.Name}}: {{goDefault "api." . }},
-{{- end}}
-{{- end }}
+        {{- end}}
+        {{- end }}
     }
   	return obj
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 )
 
-
 func AsInt(v any) (int64, error) {
 	switch v := v.(type) {
 	case int64:
@@ -73,12 +72,12 @@ func AsBoolArray(v any) ([]bool, error) {
 	switch v := v.(type) {
 	case []bool:
 		return v, nil
-    case []interface{}:
-        result := make([]bool, len(v))
-        for i, value := range v {
-            result[i], _ = AsBool(value)
-        }
-        return result, nil
+	case []interface{}:
+		result := make([]bool, len(v))
+		for i, value := range v {
+			result[i], _ = AsBool(value)
+		}
+		return result, nil
 	default:
 		return nil, fmt.Errorf("unable to cast %#v of type %T to []bool", v, v)
 	}
@@ -110,141 +109,140 @@ func AsStringArray(v any) ([]string, error) {
 	}
 }
 func AsStructInterface(v any) (StructInterface, error) {
-    switch v := v.(type) {
-    case StructInterface:
-        return v, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to StructInterface", v, v)
-    }
+	switch v := v.(type) {
+	case StructInterface:
+		return v, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to StructInterface", v, v)
+	}
 }
 
 func AsStructInterfaceArray(v any) ([]StructInterface, error) {
-    switch v := v.(type) {
-    case []StructInterface:
-        return v, nil
-    case []interface{}:
-        result := make([]StructInterface, len(v))
-        for i, value := range v {
-            result[i], _ = AsStructInterface(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []StructInterface", v, v)
-    }
+	switch v := v.(type) {
+	case []StructInterface:
+		return v, nil
+	case []interface{}:
+		result := make([]StructInterface, len(v))
+		for i, value := range v {
+			result[i], _ = AsStructInterface(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []StructInterface", v, v)
+	}
 }
 func AsStructArrayInterface(v any) (StructArrayInterface, error) {
-    switch v := v.(type) {
-    case StructArrayInterface:
-        return v, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to StructArrayInterface", v, v)
-    }
+	switch v := v.(type) {
+	case StructArrayInterface:
+		return v, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to StructArrayInterface", v, v)
+	}
 }
 
 func AsStructArrayInterfaceArray(v any) ([]StructArrayInterface, error) {
-    switch v := v.(type) {
-    case []StructArrayInterface:
-        return v, nil
-    case []interface{}:
-        result := make([]StructArrayInterface, len(v))
-        for i, value := range v {
-            result[i], _ = AsStructArrayInterface(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []StructArrayInterface", v, v)
-    }
+	switch v := v.(type) {
+	case []StructArrayInterface:
+		return v, nil
+	case []interface{}:
+		result := make([]StructArrayInterface, len(v))
+		for i, value := range v {
+			result[i], _ = AsStructArrayInterface(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []StructArrayInterface", v, v)
+	}
 }
 func AsStructBool(v any) (StructBool, error) {
-    switch v := v.(type) {
-    case StructBool:
-        return v, nil
-    default:
-        return StructBool{}, fmt.Errorf("unable to cast %#v of type %T to StructBool", v, v)
-    }
+	switch v := v.(type) {
+	case StructBool:
+		return v, nil
+	default:
+		return StructBool{}, fmt.Errorf("unable to cast %#v of type %T to StructBool", v, v)
+	}
 }
 
 func AsStructBoolArray(v any) ([]StructBool, error) {
-    switch v := v.(type) {
-    case []StructBool:
-        return v, nil
-    case []interface{}:
-        result := make([]StructBool, len(v))
-        for i, value := range v {
-            result[i], _ = AsStructBool(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []StructBool", v, v)
-    }
+	switch v := v.(type) {
+	case []StructBool:
+		return v, nil
+	case []interface{}:
+		result := make([]StructBool, len(v))
+		for i, value := range v {
+			result[i], _ = AsStructBool(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []StructBool", v, v)
+	}
 }
 func AsStructInt(v any) (StructInt, error) {
-    switch v := v.(type) {
-    case StructInt:
-        return v, nil
-    default:
-        return StructInt{}, fmt.Errorf("unable to cast %#v of type %T to StructInt", v, v)
-    }
+	switch v := v.(type) {
+	case StructInt:
+		return v, nil
+	default:
+		return StructInt{}, fmt.Errorf("unable to cast %#v of type %T to StructInt", v, v)
+	}
 }
 
 func AsStructIntArray(v any) ([]StructInt, error) {
-    switch v := v.(type) {
-    case []StructInt:
-        return v, nil
-    case []interface{}:
-        result := make([]StructInt, len(v))
-        for i, value := range v {
-            result[i], _ = AsStructInt(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []StructInt", v, v)
-    }
+	switch v := v.(type) {
+	case []StructInt:
+		return v, nil
+	case []interface{}:
+		result := make([]StructInt, len(v))
+		for i, value := range v {
+			result[i], _ = AsStructInt(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []StructInt", v, v)
+	}
 }
 func AsStructFloat(v any) (StructFloat, error) {
-    switch v := v.(type) {
-    case StructFloat:
-        return v, nil
-    default:
-        return StructFloat{}, fmt.Errorf("unable to cast %#v of type %T to StructFloat", v, v)
-    }
+	switch v := v.(type) {
+	case StructFloat:
+		return v, nil
+	default:
+		return StructFloat{}, fmt.Errorf("unable to cast %#v of type %T to StructFloat", v, v)
+	}
 }
 
 func AsStructFloatArray(v any) ([]StructFloat, error) {
-    switch v := v.(type) {
-    case []StructFloat:
-        return v, nil
-    case []interface{}:
-        result := make([]StructFloat, len(v))
-        for i, value := range v {
-            result[i], _ = AsStructFloat(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []StructFloat", v, v)
-    }
+	switch v := v.(type) {
+	case []StructFloat:
+		return v, nil
+	case []interface{}:
+		result := make([]StructFloat, len(v))
+		for i, value := range v {
+			result[i], _ = AsStructFloat(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []StructFloat", v, v)
+	}
 }
 func AsStructString(v any) (StructString, error) {
-    switch v := v.(type) {
-    case StructString:
-        return v, nil
-    default:
-        return StructString{}, fmt.Errorf("unable to cast %#v of type %T to StructString", v, v)
-    }
+	switch v := v.(type) {
+	case StructString:
+		return v, nil
+	default:
+		return StructString{}, fmt.Errorf("unable to cast %#v of type %T to StructString", v, v)
+	}
 }
 
 func AsStructStringArray(v any) ([]StructString, error) {
-    switch v := v.(type) {
-    case []StructString:
-        return v, nil
-    case []interface{}:
-        result := make([]StructString, len(v))
-        for i, value := range v {
-            result[i], _ = AsStructString(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []StructString", v, v)
-    }
+	switch v := v.(type) {
+	case []StructString:
+		return v, nil
+	case []interface{}:
+		result := make([]StructString, len(v))
+		for i, value := range v {
+			result[i], _ = AsStructString(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []StructString", v, v)
+	}
 }
-

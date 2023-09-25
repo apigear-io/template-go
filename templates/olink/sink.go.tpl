@@ -2,10 +2,9 @@ package olink
 
 import (
     "fmt"
-    "olink/pkg/client"
-	"olink/pkg/core"
+    "github.com/apigear-io/objectlink-core-go/olink/client"
+	"github.com/apigear-io/objectlink-core-go/olink/core"
     "{{ .System.Name }}/{{snake .Module.Name}}/api"
-    "sync"
 )
 
 {{ $class := printf "%sSink" .Interface }}
@@ -37,17 +36,17 @@ func (s *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
 	if s.node == nil {
         return
     }
-    propertyId := core.MakeIdentifier(s.ObjectId(), "{{.Name}}")
+    propertyId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
     s.node.SetRemoteProperty(propertyId, {{.Name}})
 }
 {{ end }}
 {{- range .Interface.Operations }}
 func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn "api." .Return }} {
-    {{- if .Return.IsVoid }}
+    {{- if not .Return.IsVoid }}
     var reply {{goReturn "api." .Return}}    
     {{- end }}    
     if s.node != nil {
-        methodId := core.MakeIdentifier(s.ObjectId(), "{{.Name}}")
+        methodId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
         {{- if .Return.IsVoid }}
         wg := sync.WaitGroup{}
         wg.Add(1)
@@ -61,7 +60,7 @@ func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn 
         s.node.InvokeRemote(methodId, core.Args{}, nil)
         {{- end }}
     }
-    {{- if .Return.IsVoid }}
+    {{- if not .Return.IsVoid }}
     return reply
     {{- end }}
 }
@@ -70,7 +69,7 @@ func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn 
 
 func (s *{{$class}}) OnSignal(signalId string, args core.Args) {
 	fmt.Printf("on signal: %s %v\n", signalId, args)
-    name := core.ToMember(signalId)
+    name := core.SymbolIdToMember(signalId)
     switch name {
     {{- range .Interface.Signals }}
     case "{{.Name}}":
@@ -96,7 +95,7 @@ func (s *{{$class}}) OnInit(objectId string, props core.KWArgs, node *client.Nod
     s.node = node
     {{- range .Interface.Properties }}
     if value, ok := props["{{.Name}}"]; ok {
-        v, err := api.As{{.TypeName}}(value)
+        v, err := api.As{{Camel .TypeName}}(value)
         if err != nil {
             fmt.Printf("error: %v\n", err)
         } else {
@@ -108,11 +107,11 @@ func (s *{{$class}}) OnInit(objectId string, props core.KWArgs, node *client.Nod
 
 func (s *{{$class}}) OnPropertyChange(propertyId string, value core.Any) {
 	fmt.Printf("on property change: %s %v\n", propertyId, value)
-	name := core.ToMember(propertyId)
+	name := core.SymbolIdToMember(propertyId)
 	switch name {
     {{- range .Interface.Properties }}
 	case "{{.Name}}":
-        v, err := api.As{{.TypeName}}(value)
+        v, err := api.As{{Camel .TypeName}}(value)
         if err != nil {
             fmt.Printf("error: %v\n", err)
         } else {

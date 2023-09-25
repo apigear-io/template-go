@@ -5,7 +5,6 @@ import (
 	"fmt"
 )
 
-
 func AsInt(v any) (int64, error) {
 	switch v := v.(type) {
 	case int64:
@@ -73,12 +72,12 @@ func AsBoolArray(v any) ([]bool, error) {
 	switch v := v.(type) {
 	case []bool:
 		return v, nil
-    case []interface{}:
-        result := make([]bool, len(v))
-        for i, value := range v {
-            result[i], _ = AsBool(value)
-        }
-        return result, nil
+	case []interface{}:
+		result := make([]bool, len(v))
+		for i, value := range v {
+			result[i], _ = AsBool(value)
+		}
+		return result, nil
 	default:
 		return nil, fmt.Errorf("unable to cast %#v of type %T to []bool", v, v)
 	}
@@ -110,49 +109,48 @@ func AsStringArray(v any) ([]string, error) {
 	}
 }
 func AsSimpleInterface(v any) (SimpleInterface, error) {
-    switch v := v.(type) {
-    case SimpleInterface:
-        return v, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to SimpleInterface", v, v)
-    }
+	switch v := v.(type) {
+	case SimpleInterface:
+		return v, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to SimpleInterface", v, v)
+	}
 }
 
 func AsSimpleInterfaceArray(v any) ([]SimpleInterface, error) {
-    switch v := v.(type) {
-    case []SimpleInterface:
-        return v, nil
-    case []interface{}:
-        result := make([]SimpleInterface, len(v))
-        for i, value := range v {
-            result[i], _ = AsSimpleInterface(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []SimpleInterface", v, v)
-    }
+	switch v := v.(type) {
+	case []SimpleInterface:
+		return v, nil
+	case []interface{}:
+		result := make([]SimpleInterface, len(v))
+		for i, value := range v {
+			result[i], _ = AsSimpleInterface(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []SimpleInterface", v, v)
+	}
 }
 func AsSimpleArrayInterface(v any) (SimpleArrayInterface, error) {
-    switch v := v.(type) {
-    case SimpleArrayInterface:
-        return v, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to SimpleArrayInterface", v, v)
-    }
+	switch v := v.(type) {
+	case SimpleArrayInterface:
+		return v, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to SimpleArrayInterface", v, v)
+	}
 }
 
 func AsSimpleArrayInterfaceArray(v any) ([]SimpleArrayInterface, error) {
-    switch v := v.(type) {
-    case []SimpleArrayInterface:
-        return v, nil
-    case []interface{}:
-        result := make([]SimpleArrayInterface, len(v))
-        for i, value := range v {
-            result[i], _ = AsSimpleArrayInterface(value)
-        }
-        return result, nil
-    default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []SimpleArrayInterface", v, v)
-    }
+	switch v := v.(type) {
+	case []SimpleArrayInterface:
+		return v, nil
+	case []interface{}:
+		result := make([]SimpleArrayInterface, len(v))
+		for i, value := range v {
+			result[i], _ = AsSimpleArrayInterface(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []SimpleArrayInterface", v, v)
+	}
 }
-

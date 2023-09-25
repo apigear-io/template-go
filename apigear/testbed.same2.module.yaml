@@ -20,7 +20,7 @@ interfaces:
           - { name: param1, type: Struct1 }
   - name: SameStruct2Interface
     properties:
-      - { name: prop1, type: Struct2 }
+      - { name: prop1, type: Struct1 }
       - { name: prop2, type: Struct2 }
     operations:
       - name: func1

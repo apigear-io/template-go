@@ -1,0 +1,17 @@
+schema: "apigear.solution/1.0"
+name: demo
+version: "0.1"
+
+layers:
+  - name: testbed
+    inputs:
+      - testbed.advanced.module.yaml
+      - testbed.enum.module.yaml
+      - testbed.same1.module.yaml
+      - testbed.same2.module.yaml
+      - testbed.simple.module.yaml
+      - testbed.struct.module.yaml
+    output: ../examples/testbed
+    template: ..
+    force: true
+    features: ["olink_testbed"]

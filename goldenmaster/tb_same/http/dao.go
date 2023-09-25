@@ -1,7 +1,5 @@
 package http
 
-
 import (
-    "goldenmaster/tb_same/api"
+	"goldenmaster/tb_same/api"
 )
-

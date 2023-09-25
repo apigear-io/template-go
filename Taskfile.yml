@@ -1,0 +1,30 @@
+version: 3
+
+tasks:
+  install:
+    desc: Install dependencies
+    cmds:
+      - go install github.com/apigear-io/cli/cmd/apigear@latest
+  clean:
+    desc: Clean up
+    cmds:
+      - rm -rf test
+  test:
+    desc: Run tests
+    cmds:
+      - apigear g s ./apigear/goldenmaster.solution.yaml
+      - git --no-pager diff --no-index --exit-code goldenmaster test
+  server:gen:
+    desc: Run server
+    cmds:
+      - apigear g s ./apigear/testbed.server.solution.yaml
+  server:fmt:
+    desc: Format server
+    dir: examples/testbed
+    cmds:
+      - goimports -w .
+  server:run:
+    desc: Run server
+    dir: test/tb_server
+    cmds:
+      - go run cmd/server/main.go

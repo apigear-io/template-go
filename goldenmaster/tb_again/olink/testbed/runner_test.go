@@ -1,14 +1,14 @@
 package testbed
 
 import (
-    "fmt"
-    "olink/pkg/client"
-    "olink/pkg/ws"
-    "goldenmaster/tb_again/api"
-    "goldenmaster/tb_again/olink"
-    "testing"
-    
-    "github.com/stretchr/testify/assert"
+	"fmt"
+	"goldenmaster/tb_again/api"
+	"goldenmaster/tb_again/olink"
+	"olink/pkg/client"
+	"olink/pkg/ws"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func getConnection(t *testing.T) (*client.Node, func(), error) {
@@ -17,55 +17,54 @@ func getConnection(t *testing.T) (*client.Node, func(), error) {
 	var registry = client.NewRegistry()
 	var node = client.NewNode(registry)
 
-
 	conn, err := ws.Dial(addr)
 	if err != nil {
 		return nil, nil, fmt.Errorf("dial error: %s\n", err)
 	}
-    done := func() {
-        conn.Close()
-    }
+	done := func() {
+		conn.Close()
+	}
 	node.SetOutput(conn)
 	conn.SetOutput(node)
 	registry.AttachClientNode(node)
-    return node, done, nil
+	return node, done, nil
 }
 
 func TestSameStruct1Interface(t *testing.T) {
-    node, done, err := getConnection(t)
-    defer done()
+	node, done, err := getConnection(t)
+	defer done()
 	assert.NoError(t, err)
-    sink := olink.NewSameStruct1InterfaceSink(node)
+	sink := olink.NewSameStruct1InterfaceSink(node)
 	node.LinkRemoteNode(sink.ObjectId())
 	node.Registry.AddObjectSink(sink)
 	node.LinkRemoteNode(sink.ObjectId())
 }
 
 func TestSameStruct2Interface(t *testing.T) {
-    node, done, err := getConnection(t)
-    defer done()
+	node, done, err := getConnection(t)
+	defer done()
 	assert.NoError(t, err)
-    sink := olink.NewSameStruct2InterfaceSink(node)
+	sink := olink.NewSameStruct2InterfaceSink(node)
 	node.LinkRemoteNode(sink.ObjectId())
 	node.Registry.AddObjectSink(sink)
 	node.LinkRemoteNode(sink.ObjectId())
 }
 
 func TestSameEnum1Interface(t *testing.T) {
-    node, done, err := getConnection(t)
-    defer done()
+	node, done, err := getConnection(t)
+	defer done()
 	assert.NoError(t, err)
-    sink := olink.NewSameEnum1InterfaceSink(node)
+	sink := olink.NewSameEnum1InterfaceSink(node)
 	node.LinkRemoteNode(sink.ObjectId())
 	node.Registry.AddObjectSink(sink)
 	node.LinkRemoteNode(sink.ObjectId())
 }
 
 func TestSameEnum2Interface(t *testing.T) {
-    node, done, err := getConnection(t)
-    defer done()
+	node, done, err := getConnection(t)
+	defer done()
 	assert.NoError(t, err)
-    sink := olink.NewSameEnum2InterfaceSink(node)
+	sink := olink.NewSameEnum2InterfaceSink(node)
 	node.LinkRemoteNode(sink.ObjectId())
 	node.Registry.AddObjectSink(sink)
 	node.LinkRemoteNode(sink.ObjectId())

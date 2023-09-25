@@ -3,8 +3,8 @@ package olink
 import (
     "fmt"
     "log"
-	"olink/pkg/core"
-    "olink/pkg/remote"
+	"github.com/apigear-io/objectlink-core-go/olink/core"
+    "github.com/apigear-io/objectlink-core-go/olink/remote"
     "{{ .System.Name }}/{{snake .Module.Name}}/api"
 )
 
@@ -35,12 +35,12 @@ func (s *{{$class}}) Invoke(methodId string, args core.Args) (core.Any, error) {
 	if s.impl == nil {
 		return nil, fmt.Errorf("no implementation")
 	}
-	name := core.ToMember(methodId)
+	name := core.SymbolIdToMember(methodId)
 	switch name {
 {{- range .Interface.Operations }}
 	case "{{.Name}}":
         {{- range $i, $p := .Params }}
-        {{.Name}}, err := api.As{{ .TypeName }}(args[{{$i}}])
+        {{.Name}}, err := api.As{{ Camel .TypeName }}(args[{{$i}}])
         if err != nil {
             return nil, err
         }
@@ -61,11 +61,11 @@ func (s *{{$class}}) SetProperty(propertyId string, value core.Any) error {
     if s.impl == nil {
         return fmt.Errorf("no implementation")
     }
-    name := core.ToMember(propertyId)
+    name := core.SymbolIdToMember(propertyId)
     switch name {
     {{- range .Interface.Properties }}
     case "{{ .Name }}":
-        prop, err := api.As{{ .TypeName }}(value)
+        prop, err := api.As{{ Camel .TypeName }}(value)
         if err != nil {
             return err
         }
@@ -98,11 +98,11 @@ func (s *{{$class}}) Linked(objectId string, node *remote.Node) error {
 }
 
 func (s *{{$class}}) NotifyPropertyChanged(name string, value any) {
-	propertyId := core.MakeIdentifier(s.ObjectId(), name)
+	propertyId := core.MakeSymbolId(s.ObjectId(), name)
 	s.node.NotifyPropertyChange(propertyId, value)
 }
 
 func (s *{{$class}}) NotifySignal(name string, args []any) {
-	signalId := core.MakeIdentifier(s.ObjectId(), name)
+	signalId := core.MakeSymbolId(s.ObjectId(), name)
 	s.node.NotifySignal(signalId, args)
 }
