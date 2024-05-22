@@ -1,5 +1,7 @@
 package main
 
+{{ $import := .System.Meta.GetString "go.module" }}
+
 {{- $system := .System }}
 import (
     "context"
@@ -10,9 +12,9 @@ import (
     "github.com/apigear-io/objectlink-core-go/olink/remote"
 {{- range .System.Modules}}
 {{- $module := . }}
-    {{snake .Name}}_olink "{{$system.Name}}/{{snake .Name}}/olink"
-    {{snake .Name}}_impl "{{$system.Name}}/{{snake .Name}}/olink/testbed"
-{{- end }}    
+    {{snake .Name}}_olink "{{$import}}/{{snake .Name}}/olink"
+    {{snake .Name}}_impl "{{$import}}/{{snake .Name}}/olink/testbed"
+{{- end }}
 )
 
 
@@ -25,7 +27,7 @@ var hub = ws.NewHub(ctx, registry)
 
 func init() {
 {{- range .System.Modules }}
-{{- $module := . }}    
+{{- $module := . }}
 {{- range .Interfaces }}
     {   // register {{ snake $module.Name}} module
         source := {{snake $module.Name}}_olink.New{{Camel .Name}}Source()

@@ -1,10 +1,13 @@
 package olink
 
+{{ $import := .System.Meta.GetString "go.module" }}
+
 import (
     "fmt"
+    "sync"
     "github.com/apigear-io/objectlink-core-go/olink/client"
 	"github.com/apigear-io/objectlink-core-go/olink/core"
-    "{{ .System.Name }}/{{snake .Module.Name}}/api"
+    "{{ $import }}/{{snake .Module.Name}}/api"
 )
 
 {{ $class := printf "%sSink" .Interface }}
@@ -15,7 +18,7 @@ type {{$class}} struct {
 {{- end }}
 {{- range .Interface.Signals }}
     On{{Camel .Name}} func({{goParams "api." .Params}})
-{{- end }}    
+{{- end }}
 }
 
 var _ client.IObjectSink = (*{{$class}})(nil)
@@ -43,8 +46,8 @@ func (s *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
 {{- range .Interface.Operations }}
 func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn "api." .Return }} {
     {{- if not .Return.IsVoid }}
-    var reply {{goReturn "api." .Return}}    
-    {{- end }}    
+    var reply {{goReturn "api." .Return}}
+    {{- end }}
     if s.node != nil {
         methodId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
         {{- if .Return.IsVoid }}
@@ -53,7 +56,9 @@ func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn 
         args := core.Args{ {{join ", " .ParamNames}} }
         s.node.InvokeRemote(methodId, args, func(arg client.InvokeReplyArg) {
             wg.Done()
+            {{- if not .Return.IsVoid }}
             reply = arg.Value.({{goReturn "api." .Return}})
+            {{- end }}
         })
         wg.Wait()
         {{- else }}

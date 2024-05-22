@@ -1,11 +1,14 @@
 package olink
 
+{{- .System.Meta.AssertKey "go.module" -}}
+{{- $import := .System.Meta.GetString "go.module" }}
+
 import (
     "fmt"
     "log"
 	"github.com/apigear-io/objectlink-core-go/olink/core"
     "github.com/apigear-io/objectlink-core-go/olink/remote"
-    "{{ .System.Name }}/{{snake .Module.Name}}/api"
+    "{{ $import }}/{{snake .Module.Name}}/api"
 )
 
 {{- $class := printf "%sSource" .Interface.Name}}
@@ -35,8 +38,7 @@ func (s *{{$class}}) Invoke(methodId string, args core.Args) (core.Any, error) {
 	if s.impl == nil {
 		return nil, fmt.Errorf("no implementation")
 	}
-	name := core.SymbolIdToMember(methodId)
-	switch name {
+	switch methodId {
 {{- range .Interface.Operations }}
 	case "{{.Name}}":
         {{- range $i, $p := .Params }}
@@ -52,9 +54,8 @@ func (s *{{$class}}) Invoke(methodId string, args core.Args) (core.Any, error) {
         return s.impl.{{ Camel .Name}}({{join ", " .ParamNames}}), nil
         {{- end }}
 {{- end }}
-    default:
-        return nil, fmt.Errorf("unknown method: %s", name)
     }
+    return nil, fmt.Errorf("unknown method: %s", methodId)
 }
 
 func (s *{{$class}}) SetProperty(propertyId string, value core.Any) error {
@@ -70,11 +71,10 @@ func (s *{{$class}}) SetProperty(propertyId string, value core.Any) error {
             return err
         }
         s.impl.Set{{ Camel .Name }}(prop)
+        return nil
     {{- end }}
-    default:
-        return fmt.Errorf("{{$class}}.SetProperty: unknown property %s", propertyId)
     }
-    return nil
+    return fmt.Errorf("{{$class}}.SetProperty: unknown property %s", propertyId)
 }
 
 func (s *{{$class}}) CollectProperties() (core.KWArgs, error) {

@@ -1,8 +1,8 @@
 package olink
 
-
+{{ $import := .System.Meta.GetString "go.module" }}
 import (
-    "{{ .System.Name }}/{{snake .Module.Name}}/api"
+    "{{ $import }}/{{snake .Module.Name}}/api"
 )
 
 
@@ -28,11 +28,10 @@ type {{ $name }}Request struct {
 }
 
 type {{ $name }}Reply struct {
-{{- if .Return.IsVoid }}
+{{- if not .Return.IsVoid }}
     Result {{goReturn "api." .Return}} `json:"result"`
 {{- end }}
 }
 
 {{- end }}
 {{- end }}
-

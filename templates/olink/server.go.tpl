@@ -1,6 +1,7 @@
 package main
 
 {{- $system := .System }}
+{{ $import := .System.Meta.GetString "go.module" }}
 import (
 	"flag"
 	"log"
@@ -9,9 +10,9 @@ import (
     "github.com/apigear-io/objectlink-core-go/olink/remote"
 {{- range .System.Modules}}
 {{- $module := . }}
-    {{snake .Name}}_olink "{{$system.Name}}/{{snake .Name}}/olink"
-    {{snake .Name}}_impl "{{$system.Name}}/{{snake .Name}}/olink/testbed"
-{{- end }}    
+    {{snake .Name}}_olink "{{$import}}/{{snake .Name}}/olink"
+    // {{snake .Name}}_impl "{{$import}}/{{snake .Name}}/olink/testbed"
+{{- end }}
 )
 
 
@@ -24,13 +25,13 @@ var hub = ws.NewHub(ctx, registry)
 func init() {
 {{- range .System.Modules }}
 {{- $module := . }}
-    
+
 {{- range .Interfaces }}
     {   // register {{ snake $module.Name}} module
         source := {{snake $module.Name}}_olink.New{{Camel .Name}}Source()
         registry.AddObjectSource(source)
-        impl := {{snake $module.Name}}_impl.New{{Camel .Name}}(source)
-        source.SetImplementation(impl)
+        // impl := {{snake $module.Name}}_impl.New{{Camel .Name}}(source)
+        // source.SetImplementation(impl)
         registry.LinkRemoteNode(source.ObjectId(), node)
     }
 {{- end }}

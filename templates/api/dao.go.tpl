@@ -18,11 +18,10 @@ type {{ $name }}Request struct {
 }
 
 type {{ $name }}Reply struct {
-{{- if .Return.IsVoid }}
+{{- if not .Return.IsVoid }}
     Result {{goReturn "" .Return}} `json:"result"`
 {{- end }}
 }
 
 {{- end }}
 {{- end }}
-

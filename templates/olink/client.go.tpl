@@ -1,14 +1,14 @@
 package main
 {{- $system := .System }}
+{{ $import := .System.Meta.GetString "go.module" }}
 import (
     "flag"
 	"log"
 	"github.com/apigear-io/objectlink-core-go/olink/client"
 	"github.com/apigear-io/objectlink-core-go/olink/ws"
 {{- range .System.Modules}}
-{{- $module := . }}
-    {{snake .Name}}_olink "{{$system.Name}}/{{snake .Name}}/olink"
-{{- end }}    
+    {{snake .Name}}_olink "{{$import}}/{{snake .Name}}/olink"
+{{- end }}
 )
 
 
@@ -17,7 +17,7 @@ var node = client.NewNode(registry)
 
 
 func registerSinks() {
-{{- range .System.Modules }}	
+{{- range .System.Modules }}
 {{- $module := . }}
 {{- range .Interfaces }}
 	{ // register {{ snake $module.Name}} module

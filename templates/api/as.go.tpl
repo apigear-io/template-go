@@ -21,6 +21,23 @@ func AsInt(v any) (int32, error) {
 	}
 }
 
+func AsInt64(v any) (int64, error) {
+	switch v := v.(type) {
+	case int64:
+		return v, nil
+	case json.Number:
+		i, err := v.Int64()
+		if err != nil {
+			return 0, err
+		}
+		return i, nil
+	default:
+		return 0, fmt.Errorf("unable to cast %#v of type %T to int64", v, v)
+	}
+}
+
+
+
 func AsIntArray(v any) ([]int32, error) {
 	switch v := v.(type) {
 	case []int32:
@@ -38,8 +55,16 @@ func AsIntArray(v any) ([]int32, error) {
 	}
 }
 
+func AsInt32(v any) (int32, error) {
+	return AsInt(v)
+}
+
+func AsInt32Array(v any) ([]int32, error) {
+	return AsIntArray(v)
+}
+
 func AsFloat(v any) (float32, error) {
-	switch v := v.(type) {	
+	switch v := v.(type) {
 	case float32:
 		return v, nil
 	case json.Number:
@@ -52,6 +77,8 @@ func AsFloat(v any) (float32, error) {
 		return 0, fmt.Errorf("unable to cast %#v of type %T to float32", v, v)
 	}
 }
+
+
 
 func AsFloatArray(v any) ([]float32, error) {
 	switch v := v.(type) {
@@ -68,10 +95,60 @@ func AsFloatArray(v any) ([]float32, error) {
 	}
 }
 
+func AsFloat32(v any) (float32, error) {
+	return AsFloat(v)
+}
+
+
+func AsFloat32Array(v any) ([]float32, error) {
+	return AsFloatArray(v)
+}
+
+func AsFloat64(v any) (float64, error) {
+	switch v := v.(type) {
+	case float64:
+		return v, nil
+	case json.Number:
+		f, err := v.Float64()
+		if err != nil {
+			return 0.0, err
+		}
+		return f, nil
+	default:
+		return 0, fmt.Errorf("unable to cast %#v of type %T to float64", v, v)
+	}
+}
+
+
+func AsFloat64Array(v any) ([]float64, error) {
+	switch v := v.(type) {
+	case []float64:
+		return v, nil
+	case []interface{}:
+		result := make([]float64, len(v))
+		for i, value := range v {
+			result[i], _ = AsFloat64(value)
+		}
+		return result, nil
+	default:
+		return nil, fmt.Errorf("unable to cast %#v of type %T to []float64", v, v)
+	}
+}
+
 func AsBool(v any) (bool, error) {
 	switch v := v.(type) {
 	case bool:
 		return v, nil
+	case json.Number:
+		i, err := v.Int64()
+		if err != nil {
+			return false, err
+		}
+		return i != 0, nil
+	case string:
+		return v == "true", nil
+	case int:
+		return v != 0, nil
 	default:
 		return false, fmt.Errorf("unable to cast %#v of type %T to bool", v, v)
 	}
@@ -150,6 +227,17 @@ func As{{Camel .Name}}Array(v any) ([]{{.Name}}, error) {
 {{- range .Module.Structs }}
 func As{{Camel .Name}}(v any) ({{.Name}}, error) {
     switch v := v.(type) {
+	case map[string]any:
+		result := {{.Name}}{}
+		data, err := json.Marshal(v)
+		if err != nil {
+			return {{.Name}}{}, err
+		}
+		err = json.Unmarshal(data, &result)
+		if err != nil {
+			return {{.Name}}{}, err
+		}
+		return result, nil
     case {{.Name}}:
         return v, nil
     default:
@@ -198,4 +286,3 @@ func As{{Camel .Name}}Array(v any) ([]{{.Name}}, error) {
     }
 }
 {{- end }}
-
