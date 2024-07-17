@@ -5,12 +5,13 @@ version: "0.1"
 layers:
   - name: goldenmaster
     inputs:
-      - testbed.advanced.module.yaml
-      - testbed.enum.module.yaml
-      - testbed.same1.module.yaml
-      - testbed.same2.module.yaml
-      - testbed.simple.module.yaml
-      - testbed.struct.module.yaml
+      - ../test-apis/apigear/testbed.advanced.module.yaml
+      - ../test-apis/apigear/testbed.enum.module.yaml
+      - ../test-apis/apigear/testbed.names.module.yaml
+      - ../test-apis/apigear/testbed.same1.module.yaml
+      - ../test-apis/apigear/testbed.same2.module.yaml
+      - ../test-apis/apigear/testbed.simple.module.yaml
+      - ../test-apis/apigear/testbed.struct.module.yaml
     output: ../test
     template: ..
     force: true
