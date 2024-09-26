@@ -40,7 +40,7 @@ func (s *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
         return
     }
     propertyId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
-    s.node.SetRemoteProperty(propertyId, {{.Name}})
+    s.node.SetRemoteProperty(propertyId, {{camel .Name}})
 }
 {{ end }}
 {{- range .Interface.Operations }}
@@ -53,7 +53,7 @@ func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn 
         {{- if .Return.IsVoid }}
         wg := sync.WaitGroup{}
         wg.Add(1)
-        args := core.Args{ {{join ", " .ParamNames}} }
+        args :=  core.Args{ {{ range $i, $p := .Params }}{{- if $i }}, {{ end -}}{{- camel $p.Name -}} {{ end }} }
         s.node.InvokeRemote(methodId, args, func(arg client.InvokeReplyArg) {
             wg.Done()
             {{- if not .Return.IsVoid }}

@@ -31,7 +31,7 @@ type INotifier interface {
 }
 
 {{- range .Module.Interfaces }}
-{{- $class := .Name }}
+{{- $class := (Camel .Name) }}
 type {{$class}} interface {
     INotifier
     // Properties

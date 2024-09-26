@@ -11,11 +11,11 @@ import (
     "{{ $import }}/{{snake .Module.Name}}/api"
 )
 
-{{- $class := printf "%sSource" .Interface.Name}}
+{{- $class := printf "%sSource" (Camel .Interface.Name)}}
 
 type {{ $class }} struct {
     node *remote.Node
-    impl api.{{ .Interface.Name }}
+    impl api.{{Camel  .Interface.Name }}
 }
 
 var _ remote.IObjectSource = (*{{$class}})(nil)
@@ -25,7 +25,7 @@ func New{{$class}}() *{{ $class }} {
     return &{{ $class }}{}
 }
 
-func (s *{{$class}}) SetImplementation(impl api.{{ .Interface.Name }}) {
+func (s *{{$class}}) SetImplementation(impl api.{{Camel  .Interface.Name }}) {
     s.impl = impl
 }
 

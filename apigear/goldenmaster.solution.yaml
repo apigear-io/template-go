@@ -5,7 +5,7 @@ version: "0.1"
 targets:
   - name: goldenmaster
     meta:
-      go.module: goldenmaster
+      go.module: testbed
     inputs:
       - ../test-apis/testbed.advanced.module.yaml
       - ../test-apis/testbed.enum.module.yaml
@@ -18,3 +18,4 @@ targets:
     template: ..
     force: true
     features: ["all"]
+    autoFix: true

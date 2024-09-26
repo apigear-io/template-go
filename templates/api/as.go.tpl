@@ -196,27 +196,27 @@ func AsStringArray(v any) ([]string, error) {
 }
 
 {{- range .Module.Interfaces }}
-func As{{Camel .Name}}(v any) ({{.Name}}, error) {
+func As{{Camel .Name}}(v any) ({{Camel .Name}}, error) {
     switch v := v.(type) {
-    case {{.Name}}:
+    case {{Camel .Name}}:
         return v, nil
     default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to {{.Name}}", v, v)
+        return nil, fmt.Errorf("unable to cast %#v of type %T to {{Camel .Name}}", v, v)
     }
 }
 
-func As{{Camel .Name}}Array(v any) ([]{{.Name}}, error) {
+func As{{Camel .Name}}Array(v any) ([]{{Camel .Name}}, error) {
     switch v := v.(type) {
-    case []{{.Name}}:
+    case []{{Camel .Name}}:
         return v, nil
     case []interface{}:
-        result := make([]{{.Name}}, len(v))
+        result := make([]{{Camel .Name}}, len(v))
         for i, value := range v {
-            result[i], _ = As{{.Name}}(value)
+            result[i], _ = As{{Camel .Name}}(value)
         }
         return result, nil
     default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []{{.Name}}", v, v)
+        return nil, fmt.Errorf("unable to cast %#v of type %T to []{{Camel .Name}}", v, v)
     }
 }
 {{- end }}
@@ -225,64 +225,64 @@ func As{{Camel .Name}}Array(v any) ([]{{.Name}}, error) {
 {{- end }}
 
 {{- range .Module.Structs }}
-func As{{Camel .Name}}(v any) ({{.Name}}, error) {
+func As{{Camel .Name}}(v any) ({{Camel .Name}}, error) {
     switch v := v.(type) {
 	case map[string]any:
-		result := {{.Name}}{}
+		result := {{Camel .Name}}{}
 		data, err := json.Marshal(v)
 		if err != nil {
-			return {{.Name}}{}, err
+			return {{Camel .Name}}{}, err
 		}
 		err = json.Unmarshal(data, &result)
 		if err != nil {
-			return {{.Name}}{}, err
+			return {{Camel .Name}}{}, err
 		}
 		return result, nil
-    case {{.Name}}:
+    case {{Camel .Name}}:
         return v, nil
     default:
-        return {{.Name}}{}, fmt.Errorf("unable to cast %#v of type %T to {{.Name}}", v, v)
+        return {{Camel .Name}}{}, fmt.Errorf("unable to cast %#v of type %T to {{Camel .Name}}", v, v)
     }
 }
 
-func As{{Camel .Name}}Array(v any) ([]{{.Name}}, error) {
+func As{{Camel .Name}}Array(v any) ([]{{Camel .Name}}, error) {
     switch v := v.(type) {
-    case []{{.Name}}:
+    case []{{Camel .Name}}:
         return v, nil
     case []interface{}:
-        result := make([]{{.Name}}, len(v))
+        result := make([]{{Camel .Name}}, len(v))
         for i, value := range v {
-            result[i], _ = As{{.Name}}(value)
+            result[i], _ = As{{Camel .Name}}(value)
         }
         return result, nil
     default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []{{.Name}}", v, v)
+        return nil, fmt.Errorf("unable to cast %#v of type %T to []{{Camel .Name}}", v, v)
     }
 }
 {{- end }}
 
 {{- range .Module.Enums }}
-func As{{Camel .Name}}(v any) ({{.Name}}, error) {
+func As{{Camel .Name}}(v any) ({{Camel .Name}}, error) {
     switch v := v.(type) {
-    case {{.Name}}:
+    case {{Camel .Name}}:
         return v, nil
     default:
-        return {{.Name}}_UNKNOWN, fmt.Errorf("unable to cast %#v of type %T to {{.Name}}", v, v)
+        return {{Camel .Name}}_UNKNOWN, fmt.Errorf("unable to cast %#v of type %T to {{Camel .Name}}", v, v)
     }
 }
 
-func As{{Camel .Name}}Array(v any) ([]{{.Name}}, error) {
+func As{{Camel .Name}}Array(v any) ([]{{Camel .Name}}, error) {
     switch v := v.(type) {
-    case []{{.Name}}:
+    case []{{Camel .Name}}:
         return v, nil
     case []interface{}:
-        result := make([]{{.Name}}, len(v))
+        result := make([]{{Camel .Name}}, len(v))
         for i, value := range v {
-            result[i], _ = As{{.Name}}(value)
+            result[i], _ = As{{Camel .Name}}(value)
         }
         return result, nil
     default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []{{.Name}}", v, v)
+        return nil, fmt.Errorf("unable to cast %#v of type %T to []{{Camel .Name}}", v, v)
     }
 }
 {{- end }}
