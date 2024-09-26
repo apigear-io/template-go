@@ -5,10 +5,38 @@ tasks:
     desc: Install dependencies
     cmds:
       - go install github.com/apigear-io/cli/cmd/apigear@latest
+  gm_clean:
+    desc: Clean up goldenmaster
+    dir: goldenmaster
+    cmds:
+      - rm -rf goldenmaster
   clean:
     desc: Clean up
     cmds:
       - rm -rf test
+  run:
+    desc: Run code generation
+    deps:
+      - clean
+    cmds:
+      - apigear g s ./apigear/goldenmaster.solution.yaml --force
+      - task: test_validate
+  gm_validate:
+    desc: Validate code generation
+    dir: goldenmaster
+    cmds:
+      - go mod tidy
+      - goimports -w .
+      - go fmt ./...
+      - golangci-lint run
+  test_validate:
+    desc: Validate code generation
+    dir: test
+    cmds:
+      - go mod tidy
+      - goimports -w .
+      - go fmt ./...
+      - golangci-lint run
   test:
     desc: Run tests
     cmds:
@@ -28,3 +56,7 @@ tasks:
     dir: test/tb_server
     cmds:
       - go run cmd/server/main.go
+  update:
+    desc: Update dependencies
+    cmds:
+      - git submodule update --remote test-apis

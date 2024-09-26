@@ -1,3 +1,0 @@
-package same
-
-import "testing"

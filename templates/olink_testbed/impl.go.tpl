@@ -47,9 +47,9 @@ func ({{$self}} *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
 // method {{.Name}}
 func ({{$self}} *{{$class}}) {{Camel .Name}}({{goParams "api." .Params}}) {{goReturn "api." .Return}} {
     {{- range .Params}}
-    {{- $prop := replace .Name "param" "prop"}}
+    {{- $prop := replace .Name "Param" "Prop" }}
     {{$self}}.Set{{Camel $prop}}({{camel .Name}})
-    {{- $sig := replace .Name "param" "sig"}}
+    {{- $sig := replace .Name "Param" "Sig"}}
     {{$self}}.NotifySignal("{{$sig}}", []any{ {{camel .Name}} })
     {{- end}}
     {{- if not .Return.IsVoid }}
@@ -57,5 +57,5 @@ func ({{$self}} *{{$class}}) {{Camel .Name}}({{goParams "api." .Params}}) {{goRe
     return {{$p.Name}}
     {{- end }}
 }
-    
+
 {{ end }}

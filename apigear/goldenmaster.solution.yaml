@@ -2,16 +2,18 @@ schema: "apigear.solution/1.0"
 name: demo
 version: "0.1"
 
-layers:
+targets:
   - name: goldenmaster
+    meta:
+      go.module: goldenmaster
     inputs:
-      - ../test-apis/apigear/testbed.advanced.module.yaml
-      - ../test-apis/apigear/testbed.enum.module.yaml
-      - ../test-apis/apigear/testbed.names.module.yaml
-      - ../test-apis/apigear/testbed.same1.module.yaml
-      - ../test-apis/apigear/testbed.same2.module.yaml
-      - ../test-apis/apigear/testbed.simple.module.yaml
-      - ../test-apis/apigear/testbed.struct.module.yaml
+      - ../test-apis/testbed.advanced.module.yaml
+      - ../test-apis/testbed.enum.module.yaml
+      - ../test-apis/testbed.names.module.yaml
+      - ../test-apis/testbed.same1.module.yaml
+      - ../test-apis/testbed.same2.module.yaml
+      - ../test-apis/testbed.simple.module.yaml
+      - ../test-apis/testbed.struct.module.yaml
     output: ../test
     template: ..
     force: true

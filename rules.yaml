@@ -1,3 +1,4 @@
+languages: ["go"]
 features:
   - name: api
     scopes:
@@ -58,7 +59,7 @@ features:
             target: "olink/{{snake .Interface.Name}}_source.go"
   - name: olink_testbed
     requires:
-      - olink      
+      - olink
     scopes:
       - match: system
         documents:

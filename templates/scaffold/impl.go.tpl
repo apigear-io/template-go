@@ -37,8 +37,8 @@ func ({{$self}} *{{$class}}) Get{{Camel .Name}}() {{goReturn "api." .}} {
 	return {{goDefault "api." .}}
 }
 
-// property set {{.Name}}
-func ({{$self}} *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {  
+// property set {{camel .Name}}
+func ({{$self}} *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
 }
 {{ end }}
 {{- range .Interface.Operations }}
@@ -46,5 +46,5 @@ func ({{$self}} *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
 func ({{$self}} *{{$class}}) {{Camel .Name}}({{goParams "api." .Params}}) {{goReturn "api." .Return}} {
   return {{goDefault "api." .Return}}
 }
-    
+
 {{ end }}
