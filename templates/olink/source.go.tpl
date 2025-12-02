@@ -1,31 +1,31 @@
-package olink
+package {{snake .Module.Name}}
 
-{{- .System.Meta.AssertKey "go.module" -}}
-{{- $import := .System.Meta.GetString "go.module" }}
+// {{- .System.Meta.AssertKey "go.module" -}}
+// {{- $import := .System.Meta.GetString "go.module" }}
 
 import (
     "fmt"
     "log"
 	"github.com/apigear-io/objectlink-core-go/olink/core"
     "github.com/apigear-io/objectlink-core-go/olink/remote"
-    "{{ $import }}/{{snake .Module.Name}}/api"
+    // "{{ $import }}/{{snake .Module.Name}}/api"
 )
 
 {{- $class := printf "%sSource" (Camel .Interface.Name)}}
 
 type {{ $class }} struct {
     node *remote.Node
-    impl api.{{Camel  .Interface.Name }}
+    impl I{{Camel  .Interface.Name }}
 }
 
 var _ remote.IObjectSource = (*{{$class}})(nil)
-var _ api.INotifier = (*{{$class}})(nil)
+var _ INotifier = (*{{$class}})(nil)
 
 func New{{$class}}() *{{ $class }} {
     return &{{ $class }}{}
 }
 
-func (s *{{$class}}) SetImplementation(impl api.{{Camel  .Interface.Name }}) {
+func (s *{{$class}}) SetImplementation(impl I{{Camel  .Interface.Name }}) {
     s.impl = impl
 }
 
@@ -42,7 +42,7 @@ func (s *{{$class}}) Invoke(methodId string, args core.Args) (core.Any, error) {
 {{- range .Interface.Operations }}
 	case "{{.Name}}":
         {{- range $i, $p := .Params }}
-        {{.Name}}, err := api.As{{ Camel .TypeName }}(args[{{$i}}])
+        {{.Name}}, err := As{{ Camel .TypeName }}(args[{{$i}}])
         if err != nil {
             return nil, err
         }
@@ -66,11 +66,10 @@ func (s *{{$class}}) SetProperty(propertyId string, value core.Any) error {
     switch name {
     {{- range .Interface.Properties }}
     case "{{ .Name }}":
-        prop, err := api.As{{ Camel .TypeName }}(value)
-        if err != nil {
-            return err
+        var prop {{goReturn "" .}}
+        if ConvertTo(value, &prop) {
+            s.impl.Set{{ Camel .Name }}(prop)
         }
-        s.impl.Set{{ Camel .Name }}(prop)
         return nil
     {{- end }}
     }

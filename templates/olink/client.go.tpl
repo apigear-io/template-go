@@ -3,11 +3,14 @@ package main
 {{ $import := .System.Meta.GetString "go.module" }}
 import (
     "flag"
-	"log"
+	"context"
+	"os"
 	"github.com/apigear-io/objectlink-core-go/olink/client"
 	"github.com/apigear-io/objectlink-core-go/olink/ws"
+	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 {{- range .System.Modules}}
-    {{snake .Name}}_olink "{{$import}}/{{snake .Name}}/olink"
+    "{{$import}}/{{snake .Name}}"
 {{- end }}
 )
 
@@ -20,8 +23,8 @@ func registerSinks() {
 {{- range .System.Modules }}
 {{- $module := . }}
 {{- range .Interfaces }}
-	{ // register {{ snake $module.Name}} module
-		sink := {{snake $module.Name}}_olink.New{{.Name}}Sink(node)
+	{ // register {{ snake $module.Name}} module scope
+		sink := {{snake $module.Name}}.New{{.Name}}Sink(node)
 		registry.AddObjectSink(sink)
 		node.LinkRemoteNode(sink.ObjectId())
 	}
@@ -30,12 +33,17 @@ func registerSinks() {
 }
 
 func main() {
-	var addr = flag.String("addr", "ws://127.0.0.1:8080/ws", "ws service addr")
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
+	flag.Usage = func() {
+		log.Info().Msgf("Usage: %s [options]", os.Args[0])
+		flag.PrintDefaults()
+	}
+	var addr = flag.String("addr", "ws://127.0.0.1:5555/ws", "ws service addr")
     flag.Parse()
 	ctx := context.Background()
     conn, err := ws.Dial(ctx, *addr)
     	if err != nil {
-		log.Fatalf("dial error: %s\n", err)
+		log.Error().Err(err).Msg("ws dial error")
 		return
 	}
     defer conn.Close()
@@ -44,5 +52,6 @@ func main() {
 	registry.AttachClientNode(node)
 	registerSinks()
 
+	select {} // block forever
 
 }

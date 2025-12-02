@@ -1,4 +1,4 @@
-package http
+package {{lower .Module.ShortName}}
 
 
 import (

@@ -1,30 +1,26 @@
-package {{.Module.ShortName}}
-
-import (
-	"{{ .System.Name }}/{{ .Module.Name|snake }}/api"
-)
+package {{snake .Module.Name}}
 
 {{- $self := .Interface.Name | first }}
 {{- $class := printf "%sImpl" (camel .Interface.Name) }}
 
 type {{$class}} struct {
-    api.INotifier
+    INotifier
 {{- range .Interface.Properties }}
-    {{.Name}} {{goReturn "api." . }}
+    {{.Name}} {{goReturn "" . }}
 {{- end }}
 }
 
-var _ api.{{.Interface.Name}} = (*{{$class}})(nil)
-var _ api.INotifier = (*{{$class}})(nil)
+var _ I{{.Interface.Name}} = (*{{$class}})(nil)
+var _ INotifier = (*{{$class}})(nil)
 
-func New{{.Interface.Name}}(notifier api.INotifier) api.{{.Interface.Name}} {
+func New{{.Interface.Name}}(notifier INotifier) I{{.Interface.Name}} {
     obj := &{{$class}}{
         INotifier: notifier,
         {{- range .Interface.Properties }}
         {{- if .IsArray }}
-        {{.Name}}: make({{goReturn "api." . }}, 0),
+        {{.Name}}: make({{goReturn "" . }}, 0),
         {{- else }}
-        {{.Name}}: {{goDefault "api." . }},
+        {{.Name}}: {{goDefault "" . }},
         {{- end}}
         {{- end }}
     }
@@ -33,18 +29,18 @@ func New{{.Interface.Name}}(notifier api.INotifier) api.{{.Interface.Name}} {
 
 {{- range .Interface.Properties }}
 // property get {{.Name}}
-func ({{$self}} *{{$class}}) Get{{Camel .Name}}() {{goReturn "api." .}} {
-	return {{goDefault "api." .}}
+func ({{$self}} *{{$class}}) Get{{Camel .Name}}() {{goReturn "" .}} {
+	return {{goDefault "" .}}
 }
 
 // property set {{camel .Name}}
-func ({{$self}} *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
+func ({{$self}} *{{$class}}) Set{{Camel .Name}}({{goParam "" .}}) {
 }
 {{ end }}
 {{- range .Interface.Operations }}
 // method {{.Name}}
-func ({{$self}} *{{$class}}) {{Camel .Name}}({{goParams "api." .Params}}) {{goReturn "api." .Return}} {
-  return {{goDefault "api." .Return}}
+func ({{$self}} *{{$class}}) {{Camel .Name}}({{goParams "" .Params}}) {{goReturn "" .Return}} {
+  return {{goDefault "" .Return}}
 }
 
 {{ end }}

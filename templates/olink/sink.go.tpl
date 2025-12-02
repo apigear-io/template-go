@@ -1,28 +1,31 @@
-package olink
+package {{snake .Module.Name}}
 
-{{ $import := .System.Meta.GetString "go.module" }}
+{{- $import := .System.Meta.GetString "go.module" }}
 
 import (
     "fmt"
     "sync"
+
     "github.com/apigear-io/objectlink-core-go/olink/client"
 	"github.com/apigear-io/objectlink-core-go/olink/core"
-    "{{ $import }}/{{snake .Module.Name}}/api"
+
+	"github.com/rs/zerolog/log"
+    "github.com/google/go-cmp/cmp"
 )
 
-{{ $class := printf "%sSink" .Interface }}
+{{- $class := printf "%sSink" .Interface }}
+
 type {{$class}} struct {
     node *client.Node
 {{- range .Interface.Properties }}
-    {{Camel .Name }} {{ goReturn "api." . }} `json:"{{ .Name }}"`
+    {{Camel .Name }} {{ goReturn "" . }}
 {{- end }}
 {{- range .Interface.Signals }}
-    On{{Camel .Name}} func({{goParams "api." .Params}})
+    On{{Camel .Name}} func({{goParams "" .Params}})
 {{- end }}
 }
 
 var _ client.IObjectSink = (*{{$class}})(nil)
-
 
 func New{{$class}}(node *client.Node) *{{$class}} {
 	return &{{$class}}{
@@ -34,103 +37,103 @@ func (s *{{$class}}) ObjectId() string {
 	return "{{dot .Module.Name}}.{{.Interface.Name}}"
 }
 
-{{ range .Interface.Properties }}
-func (s *{{$class}}) Set{{Camel .Name}}({{goParam "api." .}}) {
+
+
+{{- range .Interface.Properties }}
+
+func (s *{{$class}}) Set{{Camel .Name}}(v {{goReturn "" .}}) {
 	if s.node == nil {
         return
     }
-    propertyId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
-    s.node.SetRemoteProperty(propertyId, {{camel .Name}})
-}
-{{ end }}
-{{- range .Interface.Operations }}
-func (s *{{$class}}) {{Camel .Name}}({{ goParams "api." .Params }}) {{ goReturn "api." .Return }} {
-    {{- if not .Return.IsVoid }}
-    var reply {{goReturn "api." .Return}}
-    {{- end }}
-    if s.node != nil {
-        methodId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
-        {{- if .Return.IsVoid }}
-        wg := sync.WaitGroup{}
-        wg.Add(1)
-        args :=  core.Args{ {{ range $i, $p := .Params }}{{- if $i }}, {{ end -}}{{- camel $p.Name -}} {{ end }} }
-        s.node.InvokeRemote(methodId, args, func(arg client.InvokeReplyArg) {
-            wg.Done()
-            {{- if not .Return.IsVoid }}
-            reply = arg.Value.({{goReturn "api." .Return}})
-            {{- end }}
-        })
-        wg.Wait()
-        {{- else }}
-        s.node.InvokeRemote(methodId, core.Args{}, nil)
-        {{- end }}
+    if cmp.Equal(s.{{Camel .Name}}, v) {
+        return
     }
+    s.{{Camel .Name}} = v
+    propertyId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
+    s.node.SetRemoteProperty(propertyId, v)
+}
+{{- end }}
+{{- range .Interface.Operations }}
+
+func (s *{{$class}}) {{Camel .Name}}({{ goParams "" .Params }}) {{ goReturn "" .Return }} {
+    {{- if not .Return.IsVoid }}
+    var reply {{goReturn "" .Return}}
+    {{- end }}
+    if s.node == nil {
+        return
+    }
+    methodId := core.MakeSymbolId(s.ObjectId(), "{{.Name}}")
+    {{- if .Return.IsVoid }}
+    wg := sync.WaitGroup{}
+    wg.Add(1)
+    args := core.Args{ {{ range $i, $p := .Params }}{{- if $i }}, {{ end -}}{{- camel $p.Name -}} {{ end }} }
+    s.node.InvokeRemote(methodId, args, func(arg client.InvokeReplyArg) {
+        wg.Done()
+        {{- if not .Return.IsVoid }}
+        reply = arg.Value.({{goReturn "" .Return}})
+        {{- end }}
+    })
+    wg.Wait()
+    {{- else }}
+    s.node.InvokeRemote(methodId, core.Args{}, nil)
+    {{- end }}
     {{- if not .Return.IsVoid }}
     return reply
     {{- end }}
 }
-{{ end }}
+{{- end }}
 
 
-func (s *{{$class}}) OnSignal(signalId string, args core.Args) {
-	fmt.Printf("on signal: %s %v\n", signalId, args)
-    name := core.SymbolIdToMember(signalId)
-    switch name {
+func (s *{{$class}}) HandleSignal(signalId string, args core.Args) {
+	log.Info().Msgf("handle signal: %s %v\n", signalId, args)
+    member := core.SymbolIdToMember(signalId)
+    switch member {
     {{- range .Interface.Signals }}
     case "{{.Name}}":
         if s.On{{Camel .Name}} != nil {
-            {{- range $i, $p := .Params }}
-            {{.Name}} := args[{{$i}}].({{goReturn "api." .}})
-            {{- end }}
-            s.On{{Camel .Name}}(
-                {{- range $i, $p :=  .Params -}}
-                {{if $i}}, {{end}}{{.Name}}
-                {{- end -}})
+            s.On{{Camel .Name}}({{ goVars "" .Params }})
         }
     {{- end }}
+    default:
+        log.Warn().Msgf("unknown signal: %s", signalId) 
     }
 }
 
 
-func (s *{{$class}}) OnInit(objectId string, props core.KWArgs, node *client.Node) {
-	fmt.Printf("on init: %s props = %#v\n", objectId, props)
+func (s *{{$class}}) HandleInit(objectId string, props core.KWArgs, node *client.Node) {
+	log.Info().Msgf("handle init: %s props = %#v\n", objectId, props)
 	if objectId != s.ObjectId() {
         return
     }
     s.node = node
     {{- range .Interface.Properties }}
     if value, ok := props["{{.Name}}"]; ok {
-        v, err := api.As{{Camel .TypeName}}(value)
-        if err != nil {
-            fmt.Printf("error: %v\n", err)
-        } else {
+        var v {{goReturn "" .}}
+        if ConvertTo(value, &v) {            
             s.Set{{Camel .Name}}(v)
         }
     }
     {{- end }}
 }
 
-func (s *{{$class}}) OnPropertyChange(propertyId string, value core.Any) {
-	fmt.Printf("on property change: %s %v\n", propertyId, value)
-	name := core.SymbolIdToMember(propertyId)
-	switch name {
+func (s *{{$class}}) HandlePropertyChange(propertyId string, value core.Any) {
+	fmt.Printf("handle property change: %s %v\n", propertyId, value)
+    member := core.SymbolIdToMember(propertyId)
+    switch member {
     {{- range .Interface.Properties }}
-	case "{{.Name}}":
-        v, err := api.As{{Camel .TypeName}}(value)
-        if err != nil {
-            fmt.Printf("error: %v\n", err)
-        } else {
+    case "{{.Name}}":
+        var v {{goReturn "" .}}
+        if ConvertTo(value, &v) {
             s.Set{{Camel .Name}}(v)
         }
     {{- end }}
-	default:
-		fmt.Printf("unknown property: %s\n", propertyId)
-	}
+    default:
+        log.Warn().Msgf("unknown property: %s", propertyId)
+    }
 }
 
-
-func (s *{{$class}}) OnRelease() {
-	fmt.Printf("on release: %s\n", s.ObjectId())
+func (s *{{$class}}) HandleRelease() {
+	fmt.Printf("handle release: %s\n", s.ObjectId())
 	if s.node != nil {
 		s.node = nil
 	}

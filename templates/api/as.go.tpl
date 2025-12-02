@@ -1,4 +1,4 @@
-package api
+package {{snake .Module.Name}}
 
 import (
 	"encoding/json"
@@ -196,27 +196,28 @@ func AsStringArray(v any) ([]string, error) {
 }
 
 {{- range .Module.Interfaces }}
-func As{{Camel .Name}}(v any) ({{Camel .Name}}, error) {
+{{ $type := (Camel .Name) }}
+func As{{$type}}(v any) (I{{$type}}, error) {
     switch v := v.(type) {
-    case {{Camel .Name}}:
+    case I{{$type}}:
         return v, nil
     default:
         return nil, fmt.Errorf("unable to cast %#v of type %T to {{Camel .Name}}", v, v)
     }
 }
 
-func As{{Camel .Name}}Array(v any) ([]{{Camel .Name}}, error) {
+func As{{$type}}Array(v any) ([]I{{$type}}, error) {
     switch v := v.(type) {
-    case []{{Camel .Name}}:
+    case []I{{$type}}:
         return v, nil
-    case []interface{}:
-        result := make([]{{Camel .Name}}, len(v))
+    case []any:
+        result := make([]I{{$type}}, len(v))
         for i, value := range v {
-            result[i], _ = As{{Camel .Name}}(value)
+            result[i], _ = As{{$type}}(value)
         }
         return result, nil
     default:
-        return nil, fmt.Errorf("unable to cast %#v of type %T to []{{Camel .Name}}", v, v)
+        return nil, fmt.Errorf("unable to cast %#v of type %T to []I{{$type}}", v, v)
     }
 }
 {{- end }}

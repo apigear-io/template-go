@@ -1,4 +1,4 @@
-package olink
+package {{snake .Module.Name}}
 
 {{ $import := .System.Meta.GetString "go.module" }}
 import (
