@@ -30,3 +30,7 @@ Targets:
   master     generates the golden master.
 ```
 
+
+## License
+
+Licensed under the [MIT License](./LICENSE). See [LICENSE](./LICENSE) for details.
